@@ -6,8 +6,8 @@ public class Body {
     private static int objectCount = 0;
     private int identifier;
     private double[] position;
-    private double[] velocity;
-    private double[] acceleration;
+    private double[] velocity; //in units of length per second
+    private double[] acceleration; //in units of length per second per second
     private double mass;
 
     Body(double[] position, double[] velocity, double mass){
@@ -38,11 +38,12 @@ public class Body {
         return this.acceleration;
     }
 
-    public void updatePosition(){
-        this.velocity[0] += this.acceleration[0];
-        this.velocity[1] += this.acceleration[1];
-        this.position[0] += this.velocity[0];
-        this.position[1] += this.velocity[1];
+    public void updatePosition(double timeStep){
+        //timeStep is the amount of time that is passing between each round of calculations in seconds
+        this.velocity[0] += this.acceleration[0]*timeStep;
+        this.velocity[1] += this.acceleration[1]*timeStep;
+        this.position[0] += this.velocity[0]*timeStep;
+        this.position[1] += this.velocity[1]*timeStep;
     }
 
     public void calculateAcceleration(Body[] bodies){
@@ -54,13 +55,19 @@ public class Body {
 
             //Calculates the unit vector pointing from this body to the body in the bodies array
             double[] radiusUnit = new double[2];
-            radiusUnit[0] = bodies[0].getPosition()[0] - this.position[0];
-            radiusUnit[1] = bodies[0].getPosition()[1] - this.position[1];
+            radiusUnit[0] = bodies[i].getPosition()[0] - this.position[0];
+            radiusUnit[1] = bodies[i].getPosition()[1] - this.position[1];
             double radiusMag = Math.sqrt(Math.pow(radiusUnit[0],2) + Math.pow(radiusUnit[1],2));
             radiusUnit[0] /= radiusMag;
             radiusUnit[1] /= radiusMag;
 
+            //Calculate the force being applied from the body in the array to this body
+            forceVector[0] += GRAVITY*this.mass*bodies[i].getMass()*radiusUnit[0]/radiusMag;
+            forceVector[1] += GRAVITY*this.mass*bodies[i].getMass()*radiusUnit[1]/radiusMag;
+
         }
+        this.acceleration[0] = forceVector[0] / this.mass;
+        this.acceleration[1] = forceVector[1] / this.mass;
     }
 
 
