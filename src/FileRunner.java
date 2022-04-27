@@ -18,32 +18,33 @@ public class FileRunner {
     FileRunner(){
         super();
         Scanner input = new Scanner(System.in);
-        System.out.println("Enter a file name for storage:");
+        System.out.println("Enter a file name for storage (ending in .txt):");
         this.fileName = input.nextLine();
         try {
             File nf = new File(this.fileName);
-            if (nf.createNewFile()) {
+            int length = this.fileName.length();
+            if (nf.createNewFile() && this.fileName.substring(length-3, length).equals(".txt")) {
                 System.out.println("File created");
             } else {
-                while (!nf.createNewFile()) {
-                    System.out.println("File already exists, enter new name");
+                while (!nf.createNewFile() || !this.fileName.substring(length-3, length).equals(".txt")) {
+                    System.out.println("File already exists or format not followed, enter new name");
                     this.fileName = input.nextLine();
                     nf = new File(fileName);
                 }
                 System.out.println("File Created");
 
             }
-        } catch (IOException e) {
+        } catch (IOException | StringIndexOutOfBoundsException e) {
             System.out.println("Error occurred");
             e.printStackTrace();
         }
     }
 
     // writeToFile intakes the queue that is being built by the simulation and adds the positions to the output storage file
-    void writeToFile(BlockingQueue<ArrayList<Double>> positionQueue){
-        ArrayList<Double> line = null;
+    void writeToFile(BlockingQueue<ArrayList<Double[]>> positionQueue){
+        ArrayList<Double[]> line = null; //list of body positions at a given timestamp
         try{
-            line =  positionQueue.poll(1,TimeUnit.SECONDS);
+            line =  positionQueue.poll(1,TimeUnit.SECONDS); //runs until the simulation is complete
         }catch (InterruptedException e){
             e.printStackTrace();
         }
@@ -52,10 +53,12 @@ public class FileRunner {
             FileWriter writer = new FileWriter(this.fileName, true);
             BufferedWriter bw = new BufferedWriter(writer);
             while (line != null) {
-                for (Double position : line) {
-                    bw.write(String.valueOf(position) + ',');
+                bw.write('|');
+                for (Double[] position : line) {
+                    //writes the body positions (comma separated) separated by |
+                    bw.write(String.valueOf(position[0]) + ',' + String.valueOf(position[1]) + '|');
                 }
-                bw.newLine();
+                bw.newLine();//time steps are separated by line
                 try {
                     line = positionQueue.poll(1,TimeUnit.SECONDS);
                 }catch (InterruptedException e) {
@@ -77,9 +80,11 @@ public class FileRunner {
         try {
             fw = new FileWriter(this.fileName,false);
             bw = new BufferedWriter(fw);
-            bw.write(timeStep + ',' + unit.toString());
+            bw.write(timeStep + ',' + unit.toString()); //write the timestep and the units
             bw.newLine();
             for (Body body : bodies) {
+                //writes the mass of each body, this will be used to size the spheres when
+                //drawing them into a gif
                 bw.write((int) body.getMass()+',');
             }
 
@@ -90,7 +95,7 @@ public class FileRunner {
             try {
                 bw.close();
                 fw.close();
-            } catch (IOException | NullPointerException e) {
+            } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
             }
         }

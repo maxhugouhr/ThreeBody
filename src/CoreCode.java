@@ -1,9 +1,7 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class CoreCode {
-
-    public static void main(String[] args){
-
-    }
-
-
 
 }
