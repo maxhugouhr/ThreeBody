@@ -32,13 +32,9 @@ public class Body {
         return this.position;
     }
 
-    public double[] getVelocity(){
-        return this.velocity;
-    }
+    public double[] getVelocity(){return this.velocity;}
 
-    public double[] getAcceleration(){
-        return this.acceleration;
-    }
+    public double[] getAcceleration(){return this.acceleration;}
 
     public int getIdentifier(){return this.identifier;}
 
