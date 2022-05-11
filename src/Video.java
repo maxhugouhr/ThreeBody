@@ -25,7 +25,6 @@ public class Video {
         g2.setBackground(Color.BLACK);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-cd ideaprojects
 
         for (Double[] pos : positions) {
 
