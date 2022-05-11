@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.lang.Math;
 import java.util.LinkedList;
 
-public class Body {
+public class Body implements Serializable {
 
     public static final double GRAVITY = 6.674; //gravitational constant for simulation
     private static int objectCount = 0;
@@ -11,7 +12,7 @@ public class Body {
     private double[] acceleration; //in units of length per second per second
     private double mass;
 
-    Body(Body[] bodies, double[] position, double[] velocity, double mass){
+    Body(double[] position, double[] velocity, double mass){
 
         super();
         this.identifier = objectCount;
@@ -19,7 +20,12 @@ public class Body {
         this.position = new double[]{position[0], position[1]};
         this.velocity = new double[]{velocity[0], velocity[1]};
         this.acceleration = new double[]{0, 0};
-        this.mass = mass;
+
+        if (mass <= 0) {
+            this.mass = 0.001;
+        } else {
+            this.mass = mass;
+        }
 
 
     }

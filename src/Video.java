@@ -1,7 +1,7 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,30 +9,54 @@ import java.util.Scanner;
 //into a gif that displays that results of the simulation
 public class Video {
 
-    String fileName;
+    String outputFile;
+    String inputFile;
+
+    ArrayList<Double> massArray;
 
     Video(String fileName) {
         //the video will end up with the same name as the file from FileRunner
         super();
-        this.fileName = fileName.substring(0,fileName.length()-4) + ".gif";
+        this.inputFile = fileName;
+        this.outputFile = fileName.substring(0,fileName.length()-4) + ".gif";
 
     }
 
-    public BufferedImage createImage(ArrayList<Double[]> positions) {
+    public BufferedImage createImage(ArrayList<Body> bodies) {
 
-        BufferedImage img = new BufferedImage(1280, 720, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2 = img.createGraphics();
+        BufferedImage outputImage = new BufferedImage(1280, 720, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = outputImage.createGraphics();
         g2.setBackground(Color.BLACK);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        BufferedImage star = null;
+        for (Body body : bodies) {
+            try {
+                star = resizeImage(ImageIO.read(new File("src/resources/orbSprite.png")), body.getMass());
 
-        for (Double[] pos : positions) {
-
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-        return img;
+        g2.dispose();
+
+        return outputImage;
 
 
 
+    }
+
+    //scales the image of the orb sprite based on the mass, the scaling is based on sqrt(x) so the bodies don't
+    // get unreasonably huge
+    private BufferedImage resizeImage(BufferedImage ogImage, double mass) {
+        int defaultDiameter = 45; //this is the default width and height of a sphere with mass of 1
+        int diameter = (int) Math.round(Math.sqrt(mass) * defaultDiameter);
+        if (diameter == 0) {diameter = 1;} //ensure that the star can be displayed as at least one pixel
+        BufferedImage resizedImg = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = resizedImg.createGraphics();
+        g2d.drawImage(ogImage, 0, 0, diameter, diameter, null);
+        g2d.dispose();
+        return resizedImg;
     }
 }
