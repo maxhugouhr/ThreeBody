@@ -1,7 +1,4 @@
-import javax.lang.model.type.ArrayType;
-import java.awt.*;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.Scanner;
@@ -34,8 +31,8 @@ public class FileRunner {
     }
 
     // writeToFile intakes the queue that is being built by the simulation and adds the positions to the output storage file
-    void writeToFile(BlockingQueue<ArrayList<Double>> positionQueue){
-        ArrayList<Double> line = null; //list of body positions at a given timestamp
+    void writeToFile(BlockingQueue<ArrayList<Double[]>> positionQueue){
+        ArrayList<Double[]> line = null; //list of body positions at a given timestamp
         try{
             line =  positionQueue.poll(5,TimeUnit.SECONDS); //runs until the simulation is complete
         }catch (InterruptedException e){
@@ -91,6 +88,10 @@ public class FileRunner {
             e.printStackTrace();
         }
 
+    }
+
+    String getFileName() {
+        return this.fileName;
     }
 
 }

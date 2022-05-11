@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,35 +11,29 @@ public class Video {
 
     String fileName;
 
-    Video() {
+    Video(String fileName) {
+        //the video will end up with the same name as the file from FileRunner
         super();
-        Scanner input = new Scanner(System.in);
-        System.out.println("Enter a file name for the output gif (ending in .gif)");
-        this.fileName = input.nextLine();
-
-        try {
-            File nf = new File(this.fileName);
-            int length = this.fileName.length();
-            if (nf.createNewFile() && this.fileName.substring(length-3, length).equals(".gif")) {
-                System.out.println("File created");
-            } else {
-                while (!nf.createNewFile() || !this.fileName.substring(length-3, length).equals(".gif")) {
-                    System.out.println("File already exists or format not followed, enter new name");
-                    this.fileName = input.nextLine();
-                    nf = new File(fileName);
-                }
-                System.out.println("File Created");
-
-            }
-        } catch (IOException | StringIndexOutOfBoundsException e) {
-            System.out.println("Error occurred");
-            e.printStackTrace();
-        }
+        this.fileName = fileName.substring(0,fileName.length()-4) + ".gif";
 
     }
 
-    public BufferedImage createImage(ArrayList<Double> positions) {
+    public BufferedImage createImage(ArrayList<Double[]> positions) {
 
-        BufferedImage img = new BufferedImage()
+        BufferedImage img = new BufferedImage(1280, 720, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = img.createGraphics();
+        g2.setBackground(Color.BLACK);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+cd ideaprojects
+
+        for (Double[] pos : positions) {
+
+        }
+
+        return img;
+
+
+
     }
 }
