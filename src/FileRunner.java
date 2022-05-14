@@ -31,8 +31,8 @@ public class FileRunner {
 
     // writeToFile intakes the queue that is being built by the simulation and writes the array
     // of bodies to the output file in a serialized format
-    void writeToFile(BlockingQueue<ArrayList<Double[]>> positionQueue){
-        ArrayList<Double[]> line = null; //list of body positions at a given timestamp
+    void writeToFile(BlockingQueue<ArrayList<Body>> positionQueue){
+        ArrayList<Body> line = null; //list of body positions at a given timestamp
         try{
             line =  positionQueue.poll(5,TimeUnit.SECONDS); //runs until the simulation is complete
         }catch (InterruptedException e){
@@ -61,6 +61,31 @@ public class FileRunner {
 
     String getFileName() {
         return this.fileName;
+    }
+
+    String stringer(ArrayList<Body> bodies) {
+    //takes an array of bodies and outputs a string that contains the position and size of each body
+    //in a format that can be then written to a file.
+        StringBuilder output = new StringBuilder();
+        for (Body body : bodies) {
+            output.append(body.getPosition()[0] + ',' + body.getPosition()[1] + ',' + body.getMass() + ',');
+        }
+        return output.toString();
+    }
+
+    ArrayList<Double[]> deStringer(String line) {
+    //takes in a string line from a file and outputs the position and size of a body in an array.
+    //undoes the method stringer
+        ArrayList<Double[]> out = new ArrayList<>();
+        Double[] entry = new Double[3];
+        String[] get = line.split(",");
+        for (int i = 0; i < get.length; i+=3) {
+            entry[0] = Double.valueOf(get[i]);
+            entry[1] = Double.valueOf(get[i + 1]);
+            entry[2] = Double.valueOf(get[i + 2]);
+            out.add(entry);
+        }
+        return out;
     }
 
 }
