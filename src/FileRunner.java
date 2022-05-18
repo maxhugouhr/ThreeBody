@@ -10,8 +10,9 @@ public class FileRunner {
 
     private String rawFile;
 
-    FileRunner(){
+    FileRunner(String fileName){
         super();
+
         Scanner input = new Scanner(System.in);
         System.out.println("Enter a file name for storage (including .txt):");
         this.rawFile = "src/resources/" + input.nextLine();
@@ -91,5 +92,6 @@ public class FileRunner {
         }
         return out;
     }
+
 
 }

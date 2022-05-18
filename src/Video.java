@@ -10,15 +10,13 @@ import java.util.Scanner;
 public class Video {
 
     String outputFile;
-    String inputFile;
 
     ArrayList<Double> massArray;
 
     Video(String fileName) {
         //the video will end up with the same name as the file from FileRunner
         super();
-        this.inputFile = fileName;
-        this.outputFile = fileName.substring(0,fileName.length()-4) + ".gif";
+        this.outputFile = fileName;
 
     }
 
@@ -30,6 +28,7 @@ public class Video {
         g2.setBackground(Color.BLACK);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2.setPaint(Color.WHITE);
         for (Double[] body : bodies) {
             double mass = body[2];
             int diameter = sizer(mass);
@@ -45,8 +44,8 @@ public class Video {
     //scales the image of the orb sprite based on the mass, the scaling is based on sqrt(x) so the bodies don't
     // get unreasonably huge
     private int sizer(double mass) {
-        int defaultDiameter = 45; //this is the default width and height of a sphere with mass of 1
-        int diameter = (int) Math.round(Math.sqrt(mass) * defaultDiameter);
+        int diameter = 45; //this is the default width and height of a sphere with mass of 1
+        diameter = (int) Math.round(Math.sqrt(mass) * diameter);
         if (diameter == 0) {diameter = 1;} //ensure that the star can be displayed as at least one pixel
         return diameter;
     }
