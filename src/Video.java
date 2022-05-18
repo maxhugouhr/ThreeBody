@@ -22,41 +22,32 @@ public class Video {
 
     }
 
-    public BufferedImage createImage(ArrayList<Body> bodies) {
-
-        BufferedImage outputImage = new BufferedImage(1280, 720, BufferedImage.TYPE_INT_RGB);
+    public BufferedImage createImage(ArrayList<Double[]> bodies) {
+        //generates a buffered image with a black background and circles for each of the bodies moving around each other
+        //the bodies are sized based on their mass using sizer()
+        BufferedImage outputImage = new BufferedImage(1280, 720, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = outputImage.createGraphics();
         g2.setBackground(Color.BLACK);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        BufferedImage star = null;
-        for (Body body : bodies) {
-            try {
-                star = resizeImage(ImageIO.read(new File("src/resources/orbSprite.png")), body.getMass());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        for (Double[] body : bodies) {
+            double mass = body[2];
+            int diameter = sizer(mass);
+            int xPosition = (int) Math.round((body[0]) -  0.5*diameter);
+            int yPosition = (int) Math.round((body[1]) - 0.5*diameter);
+            g2.fillOval(xPosition,yPosition,diameter,diameter);
         }
-
         g2.dispose();
-
         return outputImage;
-
-
 
     }
 
     //scales the image of the orb sprite based on the mass, the scaling is based on sqrt(x) so the bodies don't
     // get unreasonably huge
-    private BufferedImage resizeImage(BufferedImage ogImage, double mass) {
+    private int sizer(double mass) {
         int defaultDiameter = 45; //this is the default width and height of a sphere with mass of 1
         int diameter = (int) Math.round(Math.sqrt(mass) * defaultDiameter);
         if (diameter == 0) {diameter = 1;} //ensure that the star can be displayed as at least one pixel
-        BufferedImage resizedImg = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = resizedImg.createGraphics();
-        g2d.drawImage(ogImage, 0, 0, diameter, diameter, null);
-        g2d.dispose();
-        return resizedImg;
+        return diameter;
     }
 }
