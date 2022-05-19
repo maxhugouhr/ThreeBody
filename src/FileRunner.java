@@ -93,5 +93,19 @@ public class FileRunner {
         return out;
     }
 
+    void fileToQueue(BlockingQueue<ArrayList<Double[]>> data) {
+        ArrayList<Double[]> body;
+        try {
+            Scanner reader = new Scanner(this.rawFile);
+            while (reader.hasNextLine()) {
+                String line = reader.nextLine();
+                body = new ArrayList<>(deStringer(line));
+                data.put(body);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
